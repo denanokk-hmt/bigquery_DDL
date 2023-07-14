@@ -1,0 +1,2 @@
+# bigquery_DDL
+BigQuery上ではなくソースコード上でDDLを管理するためのGolang
