@@ -1,0 +1,49 @@
+========初期設定========
+(SQLのソースリポジトリをgit moudle化する)
+1.初期設定用bashファイルがある位置まで降りる
+2.initを実行する(下記サンプル参照)
+
+sample)
+$ cd cmd/ddl
+$ ./init_bigquery_ddl_repogytory_setup init bigquery_sql
+
+必要条件)
+※第2引数は、好きなSQLソースコードを格納しているリポジトリを指定(デフォルトは、bigquery_sqlを使うでOK)
+※SQLソースコードリポジトリは、以下の定義が必要
+・トップディレクトリは、データセット名を表していること
+・ブランチは、以下の2つを持っていること
+  ・develop             ::開発・検証用ブランチ
+  ・master              ::本格納ブランチ
+・DDL(.sql)ファイルは、先頭文字に「_」アンダースコアを用いていないこと
+　※一時的に、アンダースコアを用いることで実行をスキップさせる機能を設けている
+
+========DDLロード方法========
+1.IAMキーを取得(管理者に確認)し、.vscodeのENV変数:GOOGLE_APPLICATION_CREDENTIALSにパスをあてる
+2.Debugの設定(ARGSを指定する)を行う
+  .vscode/launch.jsonのARGSを指定する
+  :
+  "args": [
+    sql_repo:bigquery_sql", <--初期設定させたRepoの名称
+    "dataset:workflow_test", <--ロード先のデータセット名
+    "source_id:p_call_test", <--ロードするのソースID(テーブル、View、ストアド、UDF) ::「*」アスタリスク指定で、dataset配下すべてをロードする
+  ],
+  :
+3.本アプリをDebug(dev, prdを選択)を実行
+4.更新されたことをBigQueryコンソールで確認すること
+
+
+========デプロイ方法========
+・本ソースコードを手動でイメージにアップするbuildコマンド
+gcloud builds submit --pack image=gcr.io/[GCP_PROJECT_ID]/[SERVICE]/[APPLI_NAME]/[ENV]/[SERVER_CODE]:[TAG]
+
+・Cloud-run jobsをコマンドで作成する場合のコマンド
+※--args→コマンド引数になる::仕様に従った指定を行う=/src/config/config.goのLiteralを参照
+gcloud beta run jobs create [JOB_NAME] \
+  --image [IMAGE_URL] \
+  --args=[frequency:FREQUENCY] \
+	--args=[content:CONTENTS_NAME] \
+  :
+  :
+  --tasks [TASK_QRY] \
+  --max-retries 5 \
+  --region asia-northeast1

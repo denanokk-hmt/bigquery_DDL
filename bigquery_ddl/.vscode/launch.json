@@ -1,0 +1,95 @@
+{
+  // IntelliSense を使用して利用可能な属性を学べます。
+  // 既存の属性の説明をホバーして表示します。
+  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      //========================================================================
+      //learnlearn DEV環境へのDDL実行
+      "name": "dev",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/main.go",
+
+      //------------------------------
+      //"sql_repo:  [DDL登録リポジトリ名(=データセット格納ディレクトリ名)]" ,
+      //"dataset:   [DDL格納先データセット名(=DDLファイル格納ディレクトリ名])",
+      //"source_id: [DDLソースID アスタリスク(*)の指定で上記データセットDir配下の全DDLを実行]",
+      //------------------------------
+      "args": [
+        "sql_repo:bigquery_sql",
+        "dataset:flightboard_contents",
+        "source_id:p_f3_4_5_sql_execute_agg_chained_tags_search_word_ranking",
+      ],
+
+      "env": { 
+        "PORT": "9090",
+        "GCP_PROJECT_ID": "learnlearn-208609",
+        "SERVER_CODE": "svc",
+        "APPLI_NAME": "bigquery-ddl", 
+        "ENV": "dev", 
+        "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/iam-key/learnlearn-208609-0fd1c77b066d.json"
+      }
+    },
+    {
+      //========================================================================
+      //bwing STG環境へのDDL実行(stagingデータセットへ)
+      "name": "stg",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/main.go",
+
+      //------------------------------
+      //"sql_repo:  [DDL登録リポジトリ名(=データセット格納ディレクトリ名)]" ,
+      //"dataset:   [DDL格納先データセット名(=DDLファイル格納ディレクトリ名])",
+      //"source_id: [DDLソースID アスタリスク(*)の指定で上記データセットDir配下の全DDLを実行]",
+      //------------------------------      
+      "args": [
+        "sql_repo:bigquery_sql",
+        "dataset:ddl_setup_tester",
+        "source_id:*",
+      ],
+
+      "env": {
+        "PORT": "9090",
+        "GCP_PROJECT_ID": "bwing-230309",
+        "SERVER_CODE": "svc",
+        "APPLI_NAME": "bigquery-ddl",
+        "ENV": "stg", 
+        "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/iam-key/bwing-230309-5e9e23b53e40.json"
+      }
+    },
+    {
+      //========================================================================
+      //bwing PRD環境へのDDL実行
+      "name": "prd",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/main.go",
+
+      //------------------------------
+      //"sql_repo:  [DDL登録リポジトリ名(=データセット格納ディレクトリ名)]" ,
+      //"dataset:   [DDL格納先データセット名(=DDLファイル格納ディレクトリ名])",
+      //"source_id: [DDLソースID アスタリスク(*)の指定で上記データセットDir配下の全DDLを実行]",
+      //------------------------------      
+      "args": [
+        "sql_repo:bigquery_sql",
+        "dataset:flightboard_contents",
+        "source_id:p_f3_4_5_sql_execute_agg_chained_tags_search_word_ranking",
+      ],
+
+      "env": {
+        "PORT": "9090",
+        "GCP_PROJECT_ID": "bwing-230309",
+        "SERVER_CODE": "svc",
+        "APPLI_NAME": "bigquery-ddl",
+        "ENV": "prd", 
+        "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/iam-key/bwing-230309-5e9e23b53e40.json"
+      }
+    }
+  ]
+}

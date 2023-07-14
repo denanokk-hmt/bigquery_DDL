@@ -1,0 +1,68 @@
+#!/bin/bash
+
+################################
+#Initial
+
+#arg1: init or update
+#arg2: ddl repo name
+################################
+
+type=${1:-hoge}
+if [ "$type" = "hoge" ]; then
+  echo "please input arg1 init or update"
+  exit 0
+fi
+
+sqlrepo=${2:-hoge}
+if [ "$sqlrepo" = "hoge" ]; then
+  echo "please input arg2 bitbucket sql repo name."
+  exit 0
+fi
+if [ "$sqlrepo" = "bigquery_ddl" ]; then
+  echo "please input arg2 bitbucket sql repo name."
+  exit 0
+fi
+
+#initailizer                                                                                                                                                                                                                  
+if [ "$type" = "init" ]; then
+  #cleanup  
+  git submodule deinit -f ${sqlrepo}
+  git rm -f ${sqlrepo}
+  rm -rf .git/modules/${sqlrepo}
+
+  #add submoduler 
+  git submodule add -f git@bitbucket.org:svc_bs_devloper/${sqlrepo}.git ${sqlrepo}
+  
+#updater
+elif [ "$type" = "update" ]; then
+  #update
+  git submodule init
+  git submodule update             
+else
+  echo "please input arg1 init or update"
+  exit 0
+fi
+
+#dir path
+path=`pwd`
+echo $path
+
+#checkout bigquery_ddl branches
+(cd $path && \
+git fetch && \
+git checkout release && \
+git checkout master && \
+git checkout develop)
+
+#checkout sql branches
+(cd $path/${sqlrepo} && \
+git fetch && \
+git checkout release/bwing && \
+git checkout release/learnlearn && \
+git checkout master && \
+git checkout develop)
+
+echo "finish"
+
+
+
